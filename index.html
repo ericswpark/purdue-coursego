@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purdue Coursego</title>
+</head>
+<body>
+    <form id="default-form">
+        <label for="course-id">Course name</label>
+        <input id="course-id" name="courseid" type="text" placeholder="(e.g. CS 18000)">
+        <input type="submit" value="Generate">
+    </form>
+
+    <a href="" id="gen-response" target="_blank"></p>
+
+    <script>
+        let form = document.getElementById('default-form');
+        let gentext = document.getElementById('gen-response');
+
+        form.addEventListener('submit', (event) => {
+            let courseId = form.elements['courseid'].value;
+            let courseSplit = courseId.split(" ");
+
+            if(courseSplit.length != 2) {
+                gentext.innerText = "Error: The course name is invalid."
+            } else {
+                let url = "https://selfservice.mypurdue.purdue.edu/prod/bzwsrch.p_catalog_detail?subject=" + courseSplit[0] + "&term=CURRENT&cnbr=" + courseSplit[1];
+
+                gentext.innerText = url;
+                gentext.setAttribute("href", url);
+            }
+
+            // Stop form submission
+            event.preventDefault();
+        });
+    </script>
+</body>
+</html>
