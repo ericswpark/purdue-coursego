@@ -9,7 +9,6 @@
     <form id="default-form">
         <label for="course-id">Course name</label>
         <input id="course-id" name="courseid" type="text" placeholder="(e.g. CS 18000)">
-        <input type="submit" value="Generate">
     </form>
 
     <a href="" id="gen-response" target="_blank"></p>
@@ -18,22 +17,26 @@
         let form = document.getElementById('default-form');
         let gentext = document.getElementById('gen-response');
 
-        form.addEventListener('submit', (event) => {
+        form.elements['courseid'].addEventListener('input', (event) => {
             let courseId = form.elements['courseid'].value;
             let courseSplit = courseId.split(" ");
 
-            if(courseSplit.length != 2) {
-                gentext.innerText = "Error: The course name is invalid."
+            // Note: some course prefixes may be more than 2 char (e.g. ECE courses)
+            // Therefore, do not check the length of courseSplit[0]
+            if(courseSplit.length !== 2 || courseSplit[1].length < 3 || courseSplit[1].length > 5) {
+                // Don't do anything if the text is invalid
             } else {
                 let url = "https://selfservice.mypurdue.purdue.edu/prod/bzwsrch.p_catalog_detail?subject=" + courseSplit[0] + "&term=CURRENT&cnbr=" + courseSplit[1];
+                let trailzero = 5 - courseSplit[1].length;
+
+                for (let i = 0; i < trailzero; i++) {
+                    url += "0";
+                }
 
                 gentext.innerText = url;
                 gentext.setAttribute("href", url);
             }
-
-            // Stop form submission
-            event.preventDefault();
-        });
+        })
     </script>
 </body>
 </html>
