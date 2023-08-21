@@ -6,7 +6,7 @@
     <title>Purdue Coursego</title>
 </head>
 <body>
-    <form id="default-form">
+    <form onsubmit="handleForm()" id="default-form">
         <label for="course-id">Course name</label>
         <input id="course-id" name="courseid" type="text" placeholder="(e.g. CS 18000)">
     </form>
@@ -17,15 +17,18 @@
         let form = document.getElementById('default-form');
         let gentext = document.getElementById('gen-response');
 
-        form.elements['courseid'].addEventListener('input', (event) => {
+        function handleForm(e) {
+            e.preventDefault();
+            window.location.href = getURL();
+        }
+
+        function getURL() {
             let courseId = form.elements['courseid'].value;
             let courseSplit = courseId.split(" ");
 
             // Note: some course prefixes may be more than 2 char (e.g. ECE courses)
             // Therefore, do not check the length of courseSplit[0]
-            if(courseSplit.length !== 2 || courseSplit[1].length < 3 || courseSplit[1].length > 5) {
-                // Don't do anything if the text is invalid
-            } else {
+            if (!(courseSplit.length !== 2 || courseSplit[1].length < 3 || courseSplit[1].length > 5)) {
                 let url = "https://selfservice.mypurdue.purdue.edu/prod/bzwsrch.p_catalog_detail?subject=" + courseSplit[0] + "&term=CURRENT&cnbr=" + courseSplit[1];
                 let trailzero = 5 - courseSplit[1].length;
 
@@ -33,9 +36,16 @@
                     url += "0";
                 }
 
-                gentext.innerText = url;
-                gentext.setAttribute("href", url);
+                return url;
             }
+
+            return "";
+        }
+
+        form.elements['courseid'].addEventListener('input', (event) => {
+            let url = getURL();
+            gentext.innerText = url;
+            gentext.setAttribute("href", url);
         })
     </script>
 </body>
